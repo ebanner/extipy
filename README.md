@@ -22,7 +22,7 @@ Note the `--Session.key='b""'` disables message authentication. This is necessar
 
 The purpose of this kernel manager is to allow a jupyter notebook to communicate with an IPython kernel started outside of jupyter. The use case in mind is that you have an external python program which calls [`IPython.embed_kernel()`](http://ipython.readthedocs.io/en/stable/api/generated/IPython.html#IPython.embed_kernel) or [`IPython.start_kernel()`](http://ipython.readthedocs.io/en/stable/api/generated/IPython.html#IPython.start_kernel).
 
-After this kernel exists, hitting **New Notebook** in the jupyter notebook interface will make the new notebook point to the external IPython kernel.
+Once you have created an IPython kernel in this way, hitting **New Notebook** in the jupyter notebook interface will trigger extipy to guess the kernel and connect to it.
 
 ## How it works
 
