@@ -8,7 +8,7 @@ Kernel manager for connecting to IPython kernels started outside of Jupyter.
 pip install extipy
 ```
 
-## Usage
+## Quick start
 
 ```
 jupyter notebook \
