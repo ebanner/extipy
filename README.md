@@ -26,4 +26,4 @@ Once you have created an IPython kernel in this way, hitting **New Notebook** in
 
 ## How it works
 
-This kernel manager lets Jupyter create a brand new kernel like normal. Then it looks in your runtime directory (should be `~/Library/Jupyter/runtime/` on mac) for the most recently started IPython kernel and connects to it.
+This kernel manager lets Jupyter create a brand new kernel like normal. Then it looks in your runtime directory (should be `~/Library/Jupyter/runtime/` on mac) for the most recently modified `kernel-*.json` file and connects to it.
