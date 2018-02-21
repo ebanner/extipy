@@ -1,6 +1,6 @@
 # extipy
 
-Kernel manager for connecting to IPython kernels started outside of Jupyter
+Kernel manager for connecting to IPython kernels started outside of Jupyter.
 
 ## Installation
 
