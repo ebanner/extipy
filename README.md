@@ -17,3 +17,13 @@ jupyter notebook \
 ```
 
 Note the `--Session.key='b""'` disables message authentication. This is necessary for now as I have not figured out how to fixup the authentication key associated with the current session.
+
+## How it works
+
+The purpose of this kernel manager is to allow a jupyter notebook to communicate with an IPython kernel started outside of jupyter. The use case in mind is that you have an external python program which calls [`IPython.embed_kernel()`](http://ipython.readthedocs.io/en/stable/api/generated/IPython.html#IPython.embed_kernel) or [`IPython.start_kernel()`](http://ipython.readthedocs.io/en/stable/api/generated/IPython.html#IPython.start_kernel).
+
+After this kernel exists, hitting **New Notebook** in the jupyter notebook interface will make the new notebook point to the external IPython kernel.
+
+## How it works
+
+This kernel manager lets Jupyter create a brand new kernel like normal. Then it looks in your runtime directory (should be `~/Library/Jupyter/runtime/` on mac) for the most recently started IPython kernel and connects to it.
