@@ -1,8 +1,8 @@
 # extipy
 
-[![PyPI version](https://badge.fury.io/py/extipy.svg)](https://badge.fury.io/py/extipy)
-
 Kernel manager for connecting to IPython kernels started outside of Jupyter.
+
+[![PyPI version](https://badge.fury.io/py/extipy.svg)](https://badge.fury.io/py/extipy)
 
 ## Installation
 
