@@ -64,7 +64,7 @@ class ExternalIPythonKernelManager(MappingKernelManager):
 
         # "connect" to latest kernel started by an external python process
         kid = self._get_latest_kernel_id()
-        connection_fname = f'/Users/ebanner/Library/Jupyter/runtime/kernel-{kid}.json'
+        connection_fname = f'{self.connection_dir}/kernel-{kid}.json'
         kernel.load_connection_file(connection_fname)
 
         # py2-compat
