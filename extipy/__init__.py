@@ -12,9 +12,9 @@ import os
 import os.path
 import re
 
-from tornado import gen
-
 from notebook.services.kernels.kernelmanager import MappingKernelManager
+from tornado import gen
+from tornado.concurrent import Future
 
 
 class ExternalIPythonKernelManager(MappingKernelManager):
@@ -63,7 +63,10 @@ class ExternalIPythonKernelManager(MappingKernelManager):
         kernel.load_connection_file(connection_fname)
 
     def _should_use_existing(self):
-        return os.path.isfile(f'{self.connection_dir}/.pynt')
+        path = f'{self.connection_dir}/.pynt'
+        self.log.info(f'Checking whether {path} exists...')
+        self.log.info(os.path.isfile(path))
+        return os.path.isfile(path)
 
     @gen.coroutine
     def start_kernel(self, **kwargs):
@@ -84,26 +87,52 @@ class ExternalIPythonKernelManager(MappingKernelManager):
         >>> kwargs = {}
 
         """
-        self.log.info('Starting kernel!')
+        self.log.info('Starting pynt kernel...')
         kernel_id = super().start_kernel(**kwargs).result()
         if self._should_use_existing():
             self._attach_to_latest_kernel(kernel_id)
         raise gen.Return(kernel_id)
 
-    # def restart_kernel(self, kernel_id):
-    #     """Possibly attach to the most recently started kernel
+    def restart_kernel(self, kernel_id):
+        """Restart a kernel by kernel_id"""
+        self._check_kernel_id(kernel_id)
+        super(MappingKernelManager, self).restart_kernel(kernel_id)
+        kernel = self.get_kernel(kernel_id)
+        # return a Future that will resolve when the kernel has successfully restarted
+        channel = kernel.connect_shell()
+        future = Future()
 
-    #     Args:
-    #         Arguments to pass to `MappingKernelManager.start_kernel()`
+        def finish():
+            """Common cleanup when restart finishes/fails for any reason."""
+            if not channel.closed():
+                channel.close()
+            loop.remove_timeout(timeout)
+            kernel.remove_restart_callback(on_restart_failed, 'dead')
+            # attach to the new kernel *right* at the end
+            if self._should_use_existing():
+                self._attach_to_latest_kernel(kernel_id)
 
-    #     >>> self = ExternalIPythonKernelManager()
-    #     >>> self.connection_dir = '/Users/ebanner/Library/Jupyter/runtime'
-    #     >>> kernel_id = self.start_kernel().result()
-    #     >>> import time; time.sleep(1)
-    #     >>> __class__ = ExternalIPythonKernelManager
+        def on_reply(msg):
+            self.log.debug("Kernel info reply received: %s", kernel_id)
+            finish()
+            if not future.done():
+                future.set_result(msg)
 
-    #     """
-    #     future = MappingKernelManager.restart_kernel(self, kernel_id)
-    #     if self._should_use_existing():
-    #         self._attach_to_latest_kernel(kernel_id)
-    #     return future
+        def on_timeout():
+            self.log.warning("Timeout waiting for kernel_info_reply: %s", kernel_id)
+            finish()
+            if not future.done():
+                future.set_exception(gen.TimeoutError("Timeout waiting for restart"))
+
+        def on_restart_failed():
+            self.log.warning("Restarting kernel failed: %s", kernel_id)
+            finish()
+            if not future.done():
+                future.set_exception(RuntimeError("Restart failed"))
+
+        kernel.add_restart_callback(on_restart_failed, 'dead')
+        kernel.session.send(channel, "kernel_info_request")
+        channel.on_recv(on_reply)
+        loop = IOLoop.current()
+        timeout = loop.add_timeout(loop.time() + 30, on_timeout)
+        return future
