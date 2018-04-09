@@ -1,3 +1,5 @@
+#### *This project is deprecated and has been absorbed into [codebook](https://github.com/ebanner/pynt/).*
+
 # extipy [![PyPI version](https://badge.fury.io/py/extipy.svg)](https://badge.fury.io/py/extipy)
 
 Kernel manager for connecting to IPython kernels started outside of Jupyter.
