@@ -238,6 +238,7 @@ class ExternalIPythonKernelManager(MappingKernelManager):
 
             # add busy/activity markers:
             kernel = self.get_kernel(kernel_id)
+            print('CREATEED_KERNEL', kernel)
             kernel.execution_state = "starting"  # type:ignore[attr-defined]
             kernel.reason = ""  # type:ignore[attr-defined]
             kernel.last_activity = utcnow()  # type:ignore[attr-defined]
@@ -448,12 +449,36 @@ class ExternalIPythonKernelManager(MappingKernelManager):
     shutdown_kernel = _async_shutdown_kernel
 
     async def _async_restart_kernel(self, kernel_id, now=False):
-        """Restart a kernel by kernel_id"""
+        """Connect to an existing kernel instead of restarting."""
         print('RESTART_KERNEL_ID', kernel_id)
         self._check_kernel_id(kernel_id)
-        await self.pinned_superclass._async_restart_kernel(self, kernel_id, now=now)
+        
+        # Instead of restarting, we'll update the kernel with our connection info
         kernel = self.get_kernel(kernel_id)
-        # return a Future that will resolve when the kernel has successfully restarted
+        
+        # Create connection info dictionary
+        connection_info = {
+            "shell_port": 51288,
+            "iopub_port": 51292,
+            "stdin_port": 51289,
+            "control_port": 51290,
+            "hb_port": 51294,
+            "ip": "127.0.0.1",
+            "transport": "tcp",
+            "signature_scheme": "hmac-sha256",
+            "key": "32bc48f7-c3e3a33d33b2d79f99b60eee"
+        }
+        
+        # Update the connection info through the proper method
+        kernel.load_connection_info(connection_info)
+        
+        # Set the session key
+        kernel.session.key = b"32bc48f7-c3e3a33d33b2d79f99b60eee"
+        kernel.session.signature_scheme = "hmac-sha256"
+
+        print('UPDATED_KERNEL', kernel)
+
+        # The rest of the original method remains the same
         channel = kernel.connect_shell()
         future: Future[Any] = Future()
 
@@ -489,6 +514,7 @@ class ExternalIPythonKernelManager(MappingKernelManager):
         channel.on_recv(on_reply)  # type:ignore[operator]
         loop = IOLoop.current()
         timeout = loop.add_timeout(loop.time() + self.kernel_info_timeout, on_timeout)
+        
         # Re-establish activity watching if ports have changed...
         if self._get_changed_ports(kernel_id) is not None:
             self.stop_watching_activity(kernel_id)
