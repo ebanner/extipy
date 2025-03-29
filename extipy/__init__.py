@@ -1,6 +1,6 @@
 """
 
-Copied from https://github.com/pyxll/pyxll-jupyter/blob/master/pyxll_jupyter/provisioning/existing.py.
+Credit: https://github.com/pyxll/pyxll-jupyter/blob/master/pyxll_jupyter/provisioning/existing.py
 
 """
 
@@ -34,20 +34,12 @@ def get_latest_connection_file():
 class ExistingProvisioner(KernelProvisionerBase):
     """
     A Kernel Provisioner that re-uses an existing kernel.
-    The kernel connection file is set in the environment variable
-    'PYXLL_IPYTHON_CONNECTION_FILE'.
+    The kernel connection file is fetched as the latest
+    modified connection file.
     """
     async def launch_kernel(self, cmd, **kwargs):
-        # Connect to kernel started by PyXLL
         connection_file = get_latest_connection_file()
-        if not os.path.abspath(connection_file):
-            connection_dir = os.path.join(os.environ["APPDATA"], "jupyter", "runtime")
-            connection_file = os.path.join(connection_dir, connection_file)
 
-        if not os.path.exists(connection_file):
-            _log.warning(f"Jupyter connection file '{connection_file}' does not exist.")
-
-        _log.info(f'PyXLL IPython kernel = {connection_file}')
         with open(connection_file) as f:
             file_info = json.load(f)
 
@@ -73,11 +65,11 @@ class ExistingProvisioner(KernelProvisionerBase):
 
     async def kill(self, restart=False):
         if restart:
-            _log.warning("Cannot restart kernel running in Excel.")
+            _log.warning("Cannot restart kernel.")
 
     async def terminate(self, restart=False):
         if restart:
-            _log.warning("Cannot restart kernel running in Excel.")
+            _log.warning("Cannot restart kernel.")
 
     async def cleanup(self, restart):
         pass
