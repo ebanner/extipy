@@ -1,30 +1,22 @@
 # extipy
 
-Kernel provisioner for connecting to IPython kernels started outside of Jupyter
+Connect jupyter lab to an external IPython kernel
 
 ## Credit
 
-This is totally just copied from [pyxll](https://github.com/pyxll).
+This is largely copied from [pyxll-jupyter](https://github.com/pyxll/pyxll-jupyter).
 
 ## Quick start
 
-Embed an IPython kernel in your code and capture all the variables:
+Embed an IPython kernel in your code and capture all the variables in scope:
 
 ```python
 import IPython
-IPython.embed_kernel(local_ns={**globals(), **locals()})
-```
-
-...
-
-```
-To connect another client to this kernel, use:
-    --existing kernel-31410.json
+IPython.embed_kernel(local_ns={**locals(), **globals()})
 ```
 
 Then attach jupyter lab to it:
 
 ```bash
-$ export PYXLL_IPYTHON_CONNECTION_FILE=$(jupyter --runtime-dir)/kernel-11100.json
-$ jupyter lab --KernelProvisionerFactory.default_provisioner_name=pyxll-provisioner
+$ jupyter lab --KernelProvisionerFactory.default_provisioner_name=extipy-provisioner
 ```
