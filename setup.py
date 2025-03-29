@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='extipy',
-    version='0.0.2',
+    version='0.0.3',
     description='Kernel manager for connecting to IPython kernels started outside of Jupyter',
     url='http://github.com/ebanner/extipy',
     author='Edward Banner',
