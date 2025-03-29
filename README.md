@@ -1,31 +1,30 @@
-#### *This project is deprecated and has been absorbed into [codebook](https://github.com/ebanner/pynt/).*
+# extipy
 
-# extipy [![PyPI version](https://badge.fury.io/py/extipy.svg)](https://badge.fury.io/py/extipy)
+Kernel provisioner for connecting to IPython kernels started outside of Jupyter
 
-Kernel manager for connecting to IPython kernels started outside of Jupyter.
+## Credit
 
-## Installation
-
-```
-pip install extipy
-```
+This is totally just copied from [pyxll](https://github.com/pyxll).
 
 ## Quick start
 
+Embed an IPython kernel in your code and capture all the variables:
+
+```python
+import IPython
+IPython.embed_kernel(local_ns={**globals(), **locals()})
 ```
-jupyter notebook \
-  --NotebookApp.kernel_manager_class=extipy.ExternalIPythonKernelManager \
-  --Session.key='b""'
+
+...
+
+```
+To connect another client to this kernel, use:
+    --existing kernel-31410.json
 ```
 
-Note the `--Session.key='b""'` disables message authentication. This is necessary for now as I have not figured out how to fixup the authentication key associated with the current session.
+Then attach jupyter lab to it:
 
-## Use case
-
-The purpose of this kernel manager is to allow a jupyter notebook to communicate with an IPython kernel started outside of jupyter. The use case in mind is that you have an external python program which calls [`IPython.embed_kernel()`](http://ipython.readthedocs.io/en/stable/api/generated/IPython.html#IPython.embed_kernel) or [`IPython.start_kernel()`](http://ipython.readthedocs.io/en/stable/api/generated/IPython.html#IPython.start_kernel).
-
-Once you have created an IPython kernel in this way, hitting **New Notebook** in the jupyter notebook interface will trigger extipy to guess the kernel and connect to it.
-
-## How it works
-
-This kernel manager lets Jupyter create a brand new kernel like normal. Then it looks in your runtime directory (should be `~/Library/Jupyter/runtime/` on mac) for the most recently modified `kernel-*.json` file and connects to it.
+```bash
+$ export PYXLL_IPYTHON_CONNECTION_FILE=$(jupyter --runtime-dir)/kernel-11100.json
+$ jupyter lab --KernelProvisionerFactory.default_provisioner_name=pyxll-provisioner
+```
