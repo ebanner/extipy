@@ -9,5 +9,10 @@ setup(
     author_email='edward.banner@gmail.com',
     license='MIT',
     packages=['extipy'],
-    zip_safe=False
+    zip_safe=False,
+    entry_points={
+        "jupyter_client.kernel_provisioners": [
+            "extipy-provisioner = extipy:ExistingProvisioner"
+        ]   
+    },  
 )
