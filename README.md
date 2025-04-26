@@ -20,3 +20,7 @@ Then attach jupyter lab to it:
 ```bash
 $ jupyter lab --KernelProvisionerFactory.default_provisioner_name=extipy-provisioner
 ```
+
+## Screenshot
+
+<img width="1425" alt="Screenshot 2025-04-26 at 12 29 31 PM" src="https://github.com/user-attachments/assets/631a2a31-2962-47e4-86b6-50c406af7c98" />
