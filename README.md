@@ -2,14 +2,7 @@
 
 Connect jupyter lab to an external IPython kernel
 
-```python
-foo = 5
-
-import IPython
-IPython.embed_kernel(local_ns={**locals(), **globals()})
-```
-
-<img width="1425" alt="Screenshot 2025-04-26 at 12 29 31 PM" src="https://github.com/user-attachments/assets/631a2a31-2962-47e4-86b6-50c406af7c98" />
+<img width="1437" height="792" alt="image" src="https://github.com/user-attachments/assets/bdc30914-3a53-45b8-89dd-6fade6c82521" />
 
 ## Credit
 
