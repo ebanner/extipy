@@ -30,3 +30,7 @@ $ jupyter lab --KernelProvisionerFactory.default_provisioner_name=extipy-provisi
 ## Credit
 
 This is largely copied from [pyxll-jupyter](https://github.com/pyxll/pyxll-jupyter).
+
+## Source
+
+extipy is the subset of the [pynt](https://github.com/ebanner/pynt) tool that I still use and find useful today.
