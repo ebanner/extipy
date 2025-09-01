@@ -2,7 +2,7 @@
 
 Debug your python script with a jupyter notebook
 
-<img width="1437" height="792" alt="image" src="https://github.com/user-attachments/assets/bdc30914-3a53-45b8-89dd-6fade6c82521" />
+<img width="1430" height="786" alt="image" src="https://github.com/user-attachments/assets/deb47a9b-e4df-4861-bb88-3f5254367a2a" />
 
 ## Install
 
