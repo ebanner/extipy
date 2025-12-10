@@ -24,7 +24,7 @@ IPython.embed_kernel(local_ns={**locals(), **globals()})
 Then attach jupyter lab to it:
 
 ```bash
-$ jupyter lab --KernelProvisionerFactory.default_provisioner_name=extipy-provisioner
+jupyter lab --KernelProvisionerFactory.default_provisioner_name=extipy-provisioner
 ```
 
 ## Credit
